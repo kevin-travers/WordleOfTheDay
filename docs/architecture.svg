@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="490" viewBox="0 0 1000 490" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>Wordle of the Day: runtime architecture</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- solid background so it reads on light and dark pages -->
+  <rect width="1000" height="490" fill="#ffffff"/>
+
+  <text x="20" y="32" font-size="20" font-weight="600" fill="#111">How the bot runs</text>
+
+  <!-- AWS account boundary -->
+  <rect x="20" y="50" width="745" height="420" rx="10" fill="#fafbfc" stroke="#8a8f98" stroke-dasharray="6 5"/>
+  <text x="36" y="74" font-size="13" font-weight="600" fill="#555">AWS account · us-east-2 · created by infra/ (Terraform)</text>
+
+  <!-- EventBridge -->
+  <rect x="45" y="200" width="185" height="95" rx="8" fill="#fbe4f0" stroke="#c2185b" stroke-width="1.5"/>
+  <text x="137" y="228" font-size="15" font-weight="600" text-anchor="middle" fill="#111">EventBridge rule</text>
+  <text x="137" y="250" font-size="12" text-anchor="middle" fill="#333">wordle-of-the-day-daily</text>
+  <text x="137" y="270" font-size="12" text-anchor="middle" fill="#333" font-family="monospace">cron(0 0 * * ? *)</text>
+  <text x="137" y="286" font-size="11" text-anchor="middle" fill="#666">daily at midnight UTC</text>
+
+  <!-- IAM role -->
+  <rect x="300" y="95" width="200" height="70" rx="8" fill="#fdecea" stroke="#c62828" stroke-width="1.5"/>
+  <text x="400" y="120" font-size="15" font-weight="600" text-anchor="middle" fill="#111">IAM role</text>
+  <text x="400" y="140" font-size="12" text-anchor="middle" fill="#333">logs: write to its log group</text>
+  <text x="400" y="156" font-size="12" text-anchor="middle" fill="#333">ssm: GetParameter (one param)</text>
+
+  <!-- Lambda -->
+  <rect x="300" y="200" width="200" height="95" rx="8" fill="#fff1dc" stroke="#e67e00" stroke-width="2"/>
+  <text x="400" y="228" font-size="15" font-weight="600" text-anchor="middle" fill="#111">Lambda</text>
+  <text x="400" y="250" font-size="12" text-anchor="middle" fill="#333">wordle-of-the-day</text>
+  <text x="400" y="268" font-size="12" text-anchor="middle" fill="#333">Go · provided.al2023 · arm64</text>
+  <text x="400" y="285" font-size="11" text-anchor="middle" fill="#666">word = hash(UTC date) → words.txt</text>
+
+  <!-- SSM -->
+  <rect x="575" y="95" width="170" height="90" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="660" y="122" font-size="15" font-weight="600" text-anchor="middle" fill="#111">SSM Parameter</text>
+  <text x="660" y="143" font-size="11" text-anchor="middle" fill="#333" font-family="monospace">/wordle/discord-</text>
+  <text x="660" y="157" font-size="11" text-anchor="middle" fill="#333" font-family="monospace">webhook-url</text>
+  <text x="660" y="175" font-size="11" text-anchor="middle" fill="#666">SecureString · set by hand</text>
+
+  <!-- CloudWatch Logs -->
+  <rect x="575" y="340" width="170" height="90" rx="8" fill="#e3f0fb" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="660" y="367" font-size="15" font-weight="600" text-anchor="middle" fill="#111">CloudWatch Logs</text>
+  <text x="660" y="388" font-size="11" text-anchor="middle" fill="#333" font-family="monospace">/aws/lambda/</text>
+  <text x="660" y="402" font-size="11" text-anchor="middle" fill="#333" font-family="monospace">wordle-of-the-day</text>
+  <text x="660" y="420" font-size="11" text-anchor="middle" fill="#666">7-day retention</text>
+
+  <!-- Discord (outside AWS) -->
+  <rect x="805" y="200" width="170" height="95" rx="8" fill="#ece9fd" stroke="#5865f2" stroke-width="1.5"/>
+  <text x="890" y="232" font-size="15" font-weight="600" text-anchor="middle" fill="#111">Discord</text>
+  <text x="890" y="254" font-size="12" text-anchor="middle" fill="#333">webhook → your channel</text>
+  <text x="890" y="272" font-size="11" text-anchor="middle" fill="#666">as Wordy McWordface</text>
+
+  <!-- arrows -->
+  <!-- 1 EventBridge -> Lambda -->
+  <line x1="230" y1="247" x2="298" y2="247" stroke="#333" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="264" y="238" font-size="12" font-weight="600" text-anchor="middle" fill="#333">1 invoke</text>
+
+  <!-- IAM role -> Lambda (assumed) -->
+  <line x1="400" y1="165" x2="400" y2="198" stroke="#c62828" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <text x="408" y="186" font-size="11" fill="#c62828">assumes</text>
+
+  <!-- 2 Lambda -> SSM -->
+  <polyline points="500,215 540,215 540,140 573,140" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="548" y="204" font-size="12" font-weight="600" fill="#333">2 get URL</text>
+
+  <!-- 3 Lambda -> Discord -->
+  <line x1="500" y1="247" x2="803" y2="247" stroke="#333" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="680" y="239" font-size="12" font-weight="600" text-anchor="middle" fill="#333">3 POST today's word</text>
+
+  <!-- Lambda -> Logs -->
+  <polyline points="500,280 540,280 540,385 573,385" fill="none" stroke="#333" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="548" y="300" font-size="12" font-weight="600" fill="#333">logs</text>
+</svg>

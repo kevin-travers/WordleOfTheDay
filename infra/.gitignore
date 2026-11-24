@@ -1,0 +1,23 @@
+# Provider plugins and local backend settings, recreated by `terraform init`
+.terraform/
+
+# State: may contain resource details and sensitive values
+*.tfstate
+*.tfstate.*
+
+# Plans can contain sensitive values too
+*.tfplan
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Variable files often end up holding secrets. Commit a *.tfvars.example instead if needed.
+*.tfvars
+*.tfvars.json
+
+# Local-only overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

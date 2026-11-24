@@ -1,0 +1,11 @@
+# Build output: the Lambda binary and the zip Terraform makes from it
+build/
+
+# Secrets and local environment (never commit these)
+.env
+.env.*
+# ...but do commit the template with placeholder values
+!.env.example
+.envrc
+*.pem
+mise.local.toml

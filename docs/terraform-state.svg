@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="400" viewBox="0 0 1000 400" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>Wordle of the Day: Terraform state</title>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- solid background so it reads on light and dark pages -->
+  <rect width="1000" height="400" fill="#ffffff"/>
+  <text x="20" y="32" font-size="20" font-weight="600" fill="#111">Where Terraform state lives</text>
+
+  <!-- bootstrap stack -->
+  <rect x="30" y="60" width="270" height="95" rx="8" fill="#f1ecfa" stroke="#6a3fb5" stroke-width="1.5"/>
+  <text x="165" y="87" font-size="15" font-weight="600" text-anchor="middle" fill="#111">infra/bootstrap/</text>
+  <text x="165" y="109" font-size="12" text-anchor="middle" fill="#333">creates the state bucket, then</text>
+  <text x="165" y="126" font-size="12" text-anchor="middle" fill="#333">stores its own state in it</text>
+  <text x="165" y="144" font-size="11" text-anchor="middle" fill="#666">run once per AWS account</text>
+
+  <!-- main stack -->
+  <rect x="30" y="250" width="270" height="95" rx="8" fill="#fff1dc" stroke="#e67e00" stroke-width="1.5"/>
+  <text x="165" y="277" font-size="15" font-weight="600" text-anchor="middle" fill="#111">infra/ (main stack)</text>
+  <text x="165" y="298" font-size="12" text-anchor="middle" fill="#333">Lambda · IAM role · SSM parameter</text>
+  <text x="165" y="316" font-size="12" text-anchor="middle" fill="#333">log group · daily schedule</text>
+
+  <!-- S3 bucket -->
+  <rect x="560" y="50" width="410" height="320" rx="10" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="580" y="77" font-size="15" font-weight="600" fill="#111">S3 bucket</text>
+  <text x="660" y="77" font-size="13" fill="#333" font-family="monospace">wordle-tfstate-&lt;account-id&gt;</text>
+  <text x="580" y="99" font-size="12" fill="#333">us-east-2 · versioned · encrypted · HTTPS only</text>
+  <text x="580" y="117" font-size="12" fill="#333">public access blocked · old versions deleted after 90 days</text>
+
+  <!-- bootstrap's files -->
+  <rect x="580" y="140" width="370" height="40" rx="6" fill="#ffffff" stroke="#2e7d32"/>
+  <text x="765" y="165" font-size="13" text-anchor="middle" fill="#111" font-family="monospace">bootstrap/terraform.tfstate</text>
+  <rect x="580" y="186" width="370" height="30" rx="6" fill="#ffffff" stroke="#2e7d32" stroke-dasharray="5 4"/>
+  <text x="765" y="206" font-size="12" text-anchor="middle" fill="#555" font-family="monospace">bootstrap/terraform.tfstate.tflock</text>
+
+  <!-- main stack's files -->
+  <rect x="580" y="246" width="370" height="40" rx="6" fill="#ffffff" stroke="#2e7d32"/>
+  <text x="765" y="271" font-size="13" text-anchor="middle" fill="#111" font-family="monospace">wordle/terraform.tfstate</text>
+  <rect x="580" y="292" width="370" height="30" rx="6" fill="#ffffff" stroke="#2e7d32" stroke-dasharray="5 4"/>
+  <text x="765" y="312" font-size="12" text-anchor="middle" fill="#555" font-family="monospace">wordle/terraform.tfstate.tflock</text>
+
+  <text x="580" y="352" font-size="11" fill="#666">dashed = lock file, exists only during plan/apply (use_lockfile = true)</text>
+
+  <!-- arrows -->
+  <line x1="300" y1="78" x2="558" y2="78" stroke="#6a3fb5" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow)"/>
+  <text x="430" y="70" font-size="12" font-weight="600" text-anchor="middle" fill="#6a3fb5">creates</text>
+
+  <line x1="300" y1="130" x2="578" y2="170" stroke="#333" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="440" y="139" font-size="12" font-weight="600" text-anchor="middle" fill="#333">state + lock</text>
+
+  <line x1="300" y1="290" x2="578" y2="272" stroke="#333" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="440" y="270" font-size="12" font-weight="600" text-anchor="middle" fill="#333">state + lock</text>
+</svg>
