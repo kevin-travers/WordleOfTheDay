@@ -11,9 +11,21 @@ variable "project" {
 }
 
 variable "schedule_expression" {
-  description = "When to post the word of the day. EventBridge cron, always in UTC: cron(min hour day-of-month month day-of-week year)."
+  description = "When to post the word of the day, in schedule_timezone. EventBridge Scheduler cron: cron(min hour day-of-month month day-of-week year)."
   type        = string
-  default     = "cron(0 0 * * ? *)" # daily at midnight UTC, the moment the word changes
+  default     = "cron(15 0 * * ? *)" # daily at 12:15 AM
+}
+
+variable "schedule_timezone" {
+  description = "IANA time zone for schedule_expression. Daylight-saving changes are handled automatically."
+  type        = string
+  default     = "America/New_York" # US Eastern
+}
+
+variable "schedule_enabled" {
+  description = "Set to false to pause the daily post."
+  type        = bool
+  default     = true
 }
 
 variable "log_retention_days" {

@@ -12,5 +12,5 @@ output "log_group_name" {
 }
 
 output "schedule" {
-  value = aws_cloudwatch_event_rule.daily.schedule_expression
+  value = "${aws_scheduler_schedule.daily.schedule_expression} ${aws_scheduler_schedule.daily.schedule_expression_timezone}"
 }
